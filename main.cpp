@@ -71,7 +71,6 @@ class Food {
 };
 
 int main() {
-  std::cout << "Hello" << std::endl;
   InitWindow(grid, grid, "Snake");
   SetTargetFPS(FrameRate);
 
@@ -84,6 +83,20 @@ int main() {
     if (eventTriggered(0.2)) {
       snake.Update();
     }
+
+    if (IsKeyPressed(KEY_UP) && snake.dir.y != 1) {
+      snake.dir = {0, -1};
+    }
+    if (IsKeyPressed(KEY_DOWN) && snake.dir.y != -1) {
+      snake.dir = {0, 1};
+    }
+    if (IsKeyPressed(KEY_LEFT) && snake.dir.x != 1) {
+      snake.dir = {-1, 0};
+    }
+    if (IsKeyPressed(KEY_RIGHT) && snake.dir.x != -1) {
+      snake.dir = {1, 0};
+    }
+
     ClearBackground(green);
 
     food.Draw();
