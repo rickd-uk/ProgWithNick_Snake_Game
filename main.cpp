@@ -1,6 +1,8 @@
 #include <raylib.h>
 
+#include <deque>
 #include <iostream>
+
 #define FrameRate 60
 #define Transparency 255
 #define grid cellSize* cellCount
@@ -11,6 +13,18 @@ Color darkGreen = {43, 51, 24, Transparency};
 int cellSize = 30;
 int cellCount = 25;
 
+class Snake {
+ public:
+  std::deque<Vector2> body = {Vector2{6, 9}, Vector2{5, 9}, Vector2{4, 9}};
+
+  void Draw() {
+    for (int i = 0; i < body.size(); i++) {
+      int x = body[i].x;
+      int y = body[i].y;
+      DrawRectangle(x * cellSize, y * cellSize, cellSize, cellSize, darkGreen);
+    }
+  }
+};
 class Food {
  public:
   Vector2 pos;
@@ -42,6 +56,7 @@ int main() {
   SetTargetFPS(FrameRate);
 
   Food food = Food();
+  Snake snake = Snake();
 
   while (WindowShouldClose() == false) {
     BeginDrawing();
@@ -49,6 +64,7 @@ int main() {
     ClearBackground(green);
 
     food.Draw();
+    snake.Draw();
 
     EndDrawing();
   }
