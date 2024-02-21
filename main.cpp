@@ -14,6 +14,17 @@ Color darkGreen = {43, 51, 24, Transparency};
 int cellSize = 30;
 int cellCount = 25;
 
+double lastUpdateTime = 0;
+
+bool eventTriggered(double interval) {
+  double currentTime = GetTime();
+  if (currentTime - lastUpdateTime >= interval) {
+    lastUpdateTime = currentTime;
+    return true;
+  }
+  return false;
+}
+
 class Snake {
  public:
   std::deque<Vector2> body = {Vector2{6, 9}, Vector2{5, 9}, Vector2{4, 9}};
@@ -33,6 +44,7 @@ class Snake {
     body.push_front(Vector2Add(body[0], dir));
   }
 };
+
 class Food {
  public:
   Vector2 pos;
@@ -69,7 +81,9 @@ int main() {
   while (WindowShouldClose() == false) {
     BeginDrawing();
 
-    snake.Update();
+    if (eventTriggered(0.2)) {
+      snake.Update();
+    }
     ClearBackground(green);
 
     food.Draw();
