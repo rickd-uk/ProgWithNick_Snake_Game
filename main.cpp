@@ -70,38 +70,48 @@ class Food {
   }
 };
 
+class Game {
+ public:
+  Snake snake = Snake();
+  Food food = Food();
+
+  void Draw() {
+    food.Draw();
+    snake.Draw();
+  }
+
+  void Update() { snake.Update(); }
+};
+
 int main() {
   InitWindow(grid, grid, "Snake");
   SetTargetFPS(FrameRate);
 
-  Food food = Food();
-  Snake snake = Snake();
+  Game game = Game();
 
   while (WindowShouldClose() == false) {
     BeginDrawing();
 
     if (eventTriggered(0.2)) {
-      snake.Update();
+      game.Update();
     }
 
-    if (IsKeyPressed(KEY_UP) && snake.dir.y != 1) {
-      snake.dir = {0, -1};
+    if (IsKeyPressed(KEY_UP) && game.snake.dir.y != 1) {
+      game.snake.dir = {0, -1};
     }
-    if (IsKeyPressed(KEY_DOWN) && snake.dir.y != -1) {
-      snake.dir = {0, 1};
+    if (IsKeyPressed(KEY_DOWN) && game.snake.dir.y != -1) {
+      game.snake.dir = {0, 1};
     }
-    if (IsKeyPressed(KEY_LEFT) && snake.dir.x != 1) {
-      snake.dir = {-1, 0};
+    if (IsKeyPressed(KEY_LEFT) && game.snake.dir.x != 1) {
+      game.snake.dir = {-1, 0};
     }
-    if (IsKeyPressed(KEY_RIGHT) && snake.dir.x != -1) {
-      snake.dir = {1, 0};
+    if (IsKeyPressed(KEY_RIGHT) && game.snake.dir.x != -1) {
+      game.snake.dir = {1, 0};
     }
 
     ClearBackground(green);
 
-    food.Draw();
-    snake.Draw();
-
+    game.Draw();
     EndDrawing();
   }
 
