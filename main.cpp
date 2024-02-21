@@ -13,11 +13,26 @@ int cellCount = 25;
 
 class Food {
  public:
-  Vector2 pos = {5, 6};
+  Vector2 pos;
+  Texture2D texture;
+
+  Food() {
+    Image image = LoadImage("images/food.png");
+    texture = LoadTextureFromImage(image);
+    UnloadImage(image);
+    pos = GenerateRandPos();
+  }
+  ~Food() { UnloadTexture(texture); }
 
   void Draw() {
-    DrawRectangle(pos.x * cellSize, pos.y * cellSize, cellSize, cellSize,
-                  darkGreen);
+    /* DrawRectangle(pos.x * cellSize, pos.y * cellSize, cellSize, cellSize,
+     * darkGreen); */
+    DrawTexture(texture, pos.x * cellSize, pos.y * cellSize, WHITE);
+  }
+  Vector2 GenerateRandPos() {
+    float x = GetRandomValue(0, cellCount - 1);
+    float y = GetRandomValue(0, cellCount - 1);
+    return Vector2{x, y};
   }
 };
 
