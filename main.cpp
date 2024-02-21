@@ -42,4 +42,5 @@ int main() {
   return 0;
 }
 
-//  g++ -o main main.cpp -lraylib -lstdc++
+//  alias build_snake='g++ -o snake main.cpp -lraylib && ./snake'
+
