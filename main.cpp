@@ -16,6 +16,15 @@ int cellCount = 25;
 
 double lastUpdateTime = 0;
 
+bool elemInDeque(Vector2 element, std::deque<Vector2> deque) {
+  for (unsigned int i = 0; i < deque.size(); i++) {
+    if (Vector2Equals(deque[i], element)) {
+      return true;
+    }
+  }
+  return false;
+}
+
 bool eventTriggered(double interval) {
   double currentTime = GetTime();
   if (currentTime - lastUpdateTime >= interval) {
@@ -50,11 +59,11 @@ class Food {
   Vector2 pos;
   Texture2D texture;
 
-  Food() {
+  Food(std::deque<Vector2> snakeBody) {
     Image image = LoadImage("images/food.png");
     texture = LoadTextureFromImage(image);
     UnloadImage(image);
-    pos = GenerateRandPos();
+    pos = GenerateRandPos(snakeBody);
   }
   ~Food() { UnloadTexture(texture); }
 
@@ -63,10 +72,19 @@ class Food {
      * darkGreen); */
     DrawTexture(texture, pos.x * cellSize, pos.y * cellSize, WHITE);
   }
-  Vector2 GenerateRandPos() {
+
+  Vector2 GenerateRandomCell() {
     float x = GetRandomValue(0, cellCount - 1);
     float y = GetRandomValue(0, cellCount - 1);
-    return Vector2{x, y};
+    Vector2 pos = {x, y};
+  }
+
+  Vector2 GenerateRandPos(std::deque<Vector2> snakeBody) {
+    Vector2 pos = GenerateRandomCell();
+    while (elemInDeque(pos, snakeBody)) {
+      pos = GenerateRandomCell();
+    }
+    return pos;
   }
 };
 
@@ -80,7 +98,16 @@ class Game {
     snake.Draw();
   }
 
-  void Update() { snake.Update(); }
+  void Update() {
+    snake.Update();
+    CheckCollisionWithFood();
+  }
+
+  void CheckCollisionWithFood() {
+    if (Vector2Equals(snake.body[0], food.pos)) {
+      food.pos = food.GenerateRandPos(snake.body);
+    }
+  }
 };
 
 int main() {
