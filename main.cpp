@@ -38,6 +38,7 @@ class Snake {
  public:
   std::deque<Vector2> body = {Vector2{6, 9}, Vector2{5, 9}, Vector2{4, 9}};
   Vector2 dir = {1, 0};
+  bool addSegment = false;
 
   void Draw() {
     for (unsigned int i = 0; i < body.size(); i++) {
@@ -48,9 +49,14 @@ class Snake {
       DrawRectangleRounded(segment, 0.5, 6, darkGreen);
     }
   }
+
   void Update() {
-    body.pop_back();
     body.push_front(Vector2Add(body[0], dir));
+    if (addSegment == true) {
+      addSegment = false;
+    } else {
+      body.pop_back();
+    }
   }
 };
 
@@ -77,6 +83,7 @@ class Food {
     float x = GetRandomValue(0, cellCount - 1);
     float y = GetRandomValue(0, cellCount - 1);
     Vector2 pos = {x, y};
+    return pos;
   }
 
   Vector2 GenerateRandPos(std::deque<Vector2> snakeBody) {
@@ -91,7 +98,7 @@ class Food {
 class Game {
  public:
   Snake snake = Snake();
-  Food food = Food();
+  Food food = Food(snake.body);
 
   void Draw() {
     food.Draw();
@@ -106,6 +113,7 @@ class Game {
   void CheckCollisionWithFood() {
     if (Vector2Equals(snake.body[0], food.pos)) {
       food.pos = food.GenerateRandPos(snake.body);
+      snake.addSegment = true;
     }
   }
 };
@@ -148,3 +156,4 @@ int main() {
 
 //  alias build_snake='g++ -o snake main.cpp -lraylib && ./snake'
 
+//  52:30
