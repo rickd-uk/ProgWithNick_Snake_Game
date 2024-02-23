@@ -13,10 +13,11 @@ Color darkGreen = {43, 51, 24, Transparency};
 
 int cellSize = 30;
 int cellCount = 25;
+int offset = 75;
 
 double lastUpdateTime = 0;
 
-bool elemInDeque(Vector2 element, std::deque<Vector2> deque) {
+bool ElemInDeque(Vector2 element, std::deque<Vector2> deque) {
   for (unsigned int i = 0; i < deque.size(); i++) {
     if (Vector2Equals(deque[i], element)) {
       return true;
@@ -44,8 +45,9 @@ class Snake {
     for (unsigned int i = 0; i < body.size(); i++) {
       float x = body[i].x;
       float y = body[i].y;
-      Rectangle segment = Rectangle{x * cellSize, y * cellSize, (float)cellSize,
-                                    (float)cellSize};
+      Rectangle segment =
+          Rectangle{offset + x * cellSize, offset + y * cellSize,
+                    (float)cellSize, (float)cellSize};
       DrawRectangleRounded(segment, 0.5, 6, darkGreen);
     }
   }
@@ -81,7 +83,8 @@ class Food {
   void Draw() {
     /* DrawRectangle(pos.x * cellSize, pos.y * cellSize, cellSize, cellSize,
      * darkGreen); */
-    DrawTexture(texture, pos.x * cellSize, pos.y * cellSize, WHITE);
+    DrawTexture(texture, offset + pos.x * cellSize, offset + pos.y * cellSize,
+                WHITE);
   }
 
   Vector2 GenerateRandomCell() {
@@ -93,7 +96,7 @@ class Food {
 
   Vector2 GenerateRandPos(std::deque<Vector2> snakeBody) {
     Vector2 pos = GenerateRandomCell();
-    while (elemInDeque(pos, snakeBody)) {
+    while (ElemInDeque(pos, snakeBody)) {
       pos = GenerateRandomCell();
     }
     return pos;
@@ -116,6 +119,7 @@ class Game {
       snake.Update();
       CheckCollisionWithFood();
       CheckCollisionWithBorder();
+      CheckCollisionWithTail();
     }
   }
 
@@ -139,13 +143,17 @@ class Game {
     running = false;
   }
 
-  void CheckCollisionsWithTail() {
+  void CheckCollisionWithTail() {
     std::deque<Vector2> headlessBody = snake.body;
+    headlessBody.pop_front();
+    if (ElemInDeque(snake.body[0], headlessBody)) {
+      GameOver();
+    }
   }
 };
 
 int main() {
-  InitWindow(grid, grid, "Snake");
+  InitWindow(2 * offset + grid, 2 * offset + grid, "Snake");
   SetTargetFPS(FrameRate);
 
   Game game = Game();
@@ -176,6 +184,9 @@ int main() {
 
     ClearBackground(green);
 
+    DrawRectangleLinesEx(Rectangle{(float)offset - 5, (float)offset - 5,
+                                   (float)grid + 10, (float)grid + 10},
+                         5, darkGreen);
     game.Draw();
     EndDrawing();
   }
@@ -185,5 +196,3 @@ int main() {
 }
 
 //  alias build_snake='g++ -o snake main.cpp -lraylib && ./snake'
-
-//  52:30
