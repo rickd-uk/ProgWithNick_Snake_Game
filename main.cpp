@@ -187,6 +187,7 @@ int main() {
     DrawRectangleLinesEx(Rectangle{(float)offset - 5, (float)offset - 5,
                                    (float)grid + 10, (float)grid + 10},
                          5, darkGreen);
+    DrawText("Retro Snake", offset - 5, 20, 40, darkGreen);
     game.Draw();
     EndDrawing();
   }
