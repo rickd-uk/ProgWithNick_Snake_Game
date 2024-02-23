@@ -108,6 +108,7 @@ class Game {
   Snake snake = Snake();
   Food food = Food(snake.body);
   bool running = true;
+  int score = 0;
 
   void Draw() {
     food.Draw();
@@ -127,6 +128,7 @@ class Game {
     if (Vector2Equals(snake.body[0], food.pos)) {
       food.pos = food.GenerateRandPos(snake.body);
       snake.addSegment = true;
+      score++;
     }
   }
 
@@ -141,6 +143,7 @@ class Game {
     snake.Reset();
     food.pos = food.GenerateRandPos(snake.body);
     running = false;
+    score = 0;
   }
 
   void CheckCollisionWithTail() {
@@ -188,6 +191,8 @@ int main() {
                                    (float)grid + 10, (float)grid + 10},
                          5, darkGreen);
     DrawText("Retro Snake", offset - 5, 20, 40, darkGreen);
+    DrawText(TextFormat("%i", game.score), offset - 5, offset + grid + 10, 40,
+             darkGreen);
     game.Draw();
     EndDrawing();
   }
